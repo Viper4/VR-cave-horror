@@ -271,6 +271,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "Velocity",
+                    "type": "Value",
+                    "id": "f7959ae2-b5d6-4c0c-9474-c8060c66bd21",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Is Tracked",
                     "type": "Button",
                     "id": "82eb6741-beef-48d3-83ab-a957dc1caa1e",
@@ -604,12 +613,78 @@
                 },
                 {
                     "name": "",
+                    "id": "7885bf41-a33f-4aea-aa0a-16d2e7f42a5d",
+                    "path": "<OculusTouchController>{LeftHand}/thumbstickClicked",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Primary 2D Axis Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "a3ba59de-6068-4809-8fa0-9d27b3c36faa",
                     "path": "<XRController>{LeftHand}/primary2DAxis",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Primary 2D Axis Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "acd5b705-432b-44cc-914c-3a4573deae26",
+                    "path": "<ViveController>{LeftHand}/trackpad",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Primary 2D Axis Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "52898278-e4cb-42cc-844f-f11f5e637d29",
+                    "path": "<OculusTouchController>{LeftHand}/thumbstick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Primary 2D Axis Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "245f49c8-08ec-43cf-8d54-d2fb447cce04",
+                    "path": "<XRController>{LeftHand}/deviceVelocity",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Velocity",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0c4246c1-d516-4c14-97d8-4629a9b8c3ef",
+                    "path": "<ViveController>{LeftHand}/devicePose/velocity",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Velocity",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1b091295-9688-4682-ba07-892d1715b315",
+                    "path": "<OculusTouchController>{LeftHand}/devicePose/velocity",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Velocity",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -1018,6 +1093,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "Velocity",
+                    "type": "Value",
+                    "id": "7f5628b6-79d4-46ed-9c20-07b1fb79dac0",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Is Tracked",
                     "type": "Button",
                     "id": "a705ffe4-b2c8-4b78-847f-25257d4e30af",
@@ -1351,12 +1435,78 @@
                 },
                 {
                     "name": "",
+                    "id": "96014615-1008-4405-b3d9-b563d56c9211",
+                    "path": "<OculusTouchController>{RightHand}/thumbstickClicked",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Primary 2D Axis Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "38764398-47e1-450a-bc97-65365687d3a9",
                     "path": "<XRController>{RightHand}/primary2DAxis",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Primary 2D Axis Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b62689f0-a9de-4462-a3bc-fcae96fa6b44",
+                    "path": "<ViveController>{RightHand}/trackpad",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Primary 2D Axis Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "919c19fd-0479-4d95-ad3e-c994f73f8503",
+                    "path": "<OculusTouchController>{RightHand}/thumbstick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Primary 2D Axis Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b7117100-71f8-4ceb-adbf-b872d76840eb",
+                    "path": "<XRController>{RightHand}/deviceVelocity",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Velocity",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "16f2582b-9fc9-4468-bedb-fa35b4b03faa",
+                    "path": "<ViveController>{RightHand}/devicePose/velocity",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Velocity",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cfa28032-fc71-4fd2-a8b6-2396f9882683",
+                    "path": "<OculusTouchController>{RightHand}/devicePose/velocity",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Velocity",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

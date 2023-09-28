@@ -13,37 +13,52 @@ public class Blinker : MonoBehaviour
 
     [SerializeField] Color offColor;
     [SerializeField] Color onColor;
+    [SerializeField] bool changeLightColor;
     [SerializeField] Light _light;
+
+    int lightIndex = 0;
+    [SerializeField] bool[] lightPattern;
 
     IEnumerator Start()
     {
-        materialInstance = GetComponent<MeshRenderer>().material;
+        if (onTime > loopTime)
+            onTime = loopTime;
+        if (TryGetComponent(out MeshRenderer renderer))
+            materialInstance = renderer.material;
+        if (!_light)
+            TryGetComponent(out _light);
         if (playOnStart)
         {
-            yield return new WaitForSecondsRealtime(Random.Range(0, startDelayMax));
+            yield return new WaitForSeconds(Random.Range(0, startDelayMax));
             StartCoroutine(BlinkLoop());
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     IEnumerator BlinkLoop()
     {
-        materialInstance.SetColor("_EmissionColor", onColor);
-        if (_light != null)
-            _light.enabled = true;
+        if(lightPattern.Length == 0 || lightPattern[lightIndex])
+        {
+            if (materialInstance)
+                materialInstance.SetColor("_EmissionColor", onColor);
+            if (changeLightColor)
+                _light.color = onColor;
+            else
+                _light.enabled = true;
+        }
 
         yield return new WaitForSeconds(onTime);
 
-        materialInstance.SetColor("_EmissionColor", offColor);
-        if (_light != null)
+        if (materialInstance)
+            materialInstance.SetColor("_EmissionColor", offColor);
+        if (changeLightColor)
+            _light.color = offColor;
+        else
             _light.enabled = false;
 
-        yield return new WaitForSeconds(loopTime);
+        yield return new WaitForSeconds(loopTime - onTime);
+        lightIndex++;
+        if (lightIndex > lightPattern.Length - 1)
+            lightIndex = 0;
         StartCoroutine(BlinkLoop());
     }
 }

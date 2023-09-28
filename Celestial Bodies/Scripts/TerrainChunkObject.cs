@@ -5,10 +5,16 @@ using UnityEngine.Rendering.Universal;
 
 public class TerrainChunkObject : MonoBehaviour
 {
-    TerrainChunk terrainChunk;
     public MeshFilter meshFilter;
     public MeshRenderer meshRenderer;
     [SerializeField] float visibleAngle;
+    //Vector3 midPoint;
+    Transform midPoint;
+
+    private void Start()
+    {
+        midPoint = transform.Find("Mid Point");
+    }
 
     private void Update()
     {
@@ -17,17 +23,22 @@ public class TerrainChunkObject : MonoBehaviour
 
     public void Init(TerrainChunk chunk, float visibleAngle)
     {
-        terrainChunk = chunk;
         meshFilter = gameObject.AddComponent<MeshFilter>();
         meshRenderer = gameObject.AddComponent<MeshRenderer>();
         this.visibleAngle = visibleAngle;
+        //midPoint = chunk.GetPointOnCubeSphere(new Vector2(0.5f, 0.5f));
+        midPoint = new GameObject("Mid Point").transform;
+        midPoint.SetParent(transform);
+        midPoint.localPosition = chunk.GetPointOnCubeSphere(new Vector2(0.5f, 0.5f));
     }
 
     private bool IsVisibleFrom(Camera camera)
     {
-        Vector3 meshMidPoint = transform.TransformPoint(terrainChunk.GetPointOnCubeSphere(new Vector2(0.5f, 0.5f)));
-        Vector3 normal = meshMidPoint - transform.position;
-        Vector3 toCamera = camera.transform.position - meshMidPoint;
+        //Vector3 globalMidPoint = transform.TransformPoint(midPoint);
+        Vector3 normal = midPoint.position - transform.position;
+        Vector3 toCamera = camera.transform.position - midPoint.position;
+        //Debug.DrawRay(globalMidPoint, normal, Color.red, 0.1f);
+        //Debug.DrawRay(globalMidPoint, toCamera, Color.green, 0.1f);
         if(Vector3.Angle(normal, toCamera) < visibleAngle)
         {
             if (meshRenderer.enabled)

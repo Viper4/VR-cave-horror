@@ -5,6 +5,7 @@ using UnityEngine;
 public class AmbianceControl : MonoBehaviour
 {
     [SerializeField] Player player;
+    [SerializeField] AudioReverbFilter reverbFilter;
     AudioSource audioSource;
     bool storm = false;
     [SerializeField] AudioClip outsideStormClip;

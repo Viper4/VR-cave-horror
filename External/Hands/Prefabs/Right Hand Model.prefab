@@ -1029,7 +1029,7 @@ GameObject:
   - component: {fileID: 5686134208185136530}
   - component: {fileID: 5686134208192617028}
   - component: {fileID: 5339678720401661171}
-  m_Layer: 2
+  m_Layer: 15
   m_Name: Right Hand Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1090,12 +1090,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.125, y: 0.1, z: 0.2}
-  m_Center: {x: 0.03, y: 0.035, z: 0}
+  m_Size: {x: 0.125, y: 0.09, z: 0.2}
+  m_Center: {x: 0.035, y: 0.025, z: 0.01}
 --- !u!1 &5686134208185362932
 GameObject:
   m_ObjectHideFlags: 0

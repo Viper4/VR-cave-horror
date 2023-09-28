@@ -1,59 +1,62 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class SpaceEnvironment : MonoBehaviour
 {
-    public static SpaceEnvironment instance;
+    [SerializeField] SceneLoader sceneLoader;
+    [SerializeField] ScreenFade screenFade;
 
-    [SerializeField] Transform cameraTransform;
-    [SerializeField] Transform planet;
-    [SerializeField] Transform atmosphere;
-    Material atmosphereMaterial;
-    [SerializeField] Vector3 planetRotationAxis = Vector3.up;
-    [SerializeField] float planetRotateSpeed = 1;
+    [SerializeField, Header("Wake Up Fade")] float fadeTime;
 
-    [SerializeField] Transform star;
-    [SerializeField] Vector3 starOffset;
-    [SerializeField] Vector3 starRealScale;
-    [SerializeField] float starOrbitRadius = 100000;
-    [SerializeField] float scaleFactor = 1000;
-    [SerializeField] float starOrbitSpeed = 1;
-    float orbitTimer = 0;
+    [SerializeField] AudioMixer masterMixer;
+    [SerializeField] float[] dryLevelFade;
 
-    [SerializeField] Transform directionalLight;
+    [SerializeField] Volume defaultVolume;
+    [SerializeField] float[] dofDistanceFade;
+    DepthOfField depthOfField;
 
-    [SerializeField] Transform[] solarArrays;
+    bool awake;
+    float timer;
+    [SerializeField] float suffocateTime = 120;
 
     void Start()
     {
-        if (instance == null)
-            instance = this;
-        star.localScale = new Vector3((float)(starRealScale.x / scaleFactor), (float)(starRealScale.y / scaleFactor), (float)(starRealScale.z / scaleFactor));
-        atmosphereMaterial = atmosphere.GetComponent<MeshRenderer>().sharedMaterial;
+        defaultVolume.profile.TryGet(out depthOfField);
+        StartCoroutine(WakeUpFade());
     }
 
     void Update()
     {
-        float x = Mathf.Cos(orbitTimer) * starOrbitRadius + starOffset.x + planet.position.x;
-        float z = Mathf.Sin(orbitTimer) * starOrbitRadius + starOffset.z + planet.position.z;
-        Vector3 toPlanet = (planet.position - new Vector3(x, starOffset.y + planet.position.y, z)).normalized;
-        atmosphereMaterial.SetVector("_LightDirection", toPlanet);
-        atmosphereMaterial.SetVector("_PlanetPosition", planet.position);
-        planet.Rotate(planetRotateSpeed * Time.deltaTime * planetRotationAxis);
-
-        orbitTimer += starOrbitSpeed * Time.deltaTime;
-        float signedAngle = -Vector3.SignedAngle(Vector3.forward, toPlanet, Vector3.up);
-        if (signedAngle < 0)
-            signedAngle += 360;
-        RenderSettings.skybox.SetFloat("_Rotation", signedAngle);
-
-        star.position = new Vector3((float)((x - cameraTransform.position.x) / scaleFactor + cameraTransform.position.x), (float)((starOffset.y + planet.position.y - cameraTransform.position.y) / scaleFactor + cameraTransform.position.y), (float)((z - cameraTransform.position.z) / scaleFactor + cameraTransform.position.z));
-
-        directionalLight.rotation = Quaternion.LookRotation(toPlanet);
-        foreach(Transform solarArray in solarArrays)
+        if (awake)
         {
-            solarArray.rotation = Quaternion.LookRotation(toPlanet, solarArray.up);
+            timer += Time.deltaTime;
+
+            depthOfField.focusDistance.value = Mathf.Lerp(dofDistanceFade[1], dofDistanceFade[0], timer / suffocateTime);
+            screenFade.SetFade(timer / suffocateTime);
+            if(timer >= suffocateTime)
+                sceneLoader.LoadScene(0, false, false);
         }
+    }
+
+    IEnumerator WakeUpFade()
+    {
+        float fadeTimer = 0;
+        depthOfField.active = true;
+        while (fadeTimer < fadeTime)
+        {
+            depthOfField.focusDistance.value = Mathf.Lerp(dofDistanceFade[0], dofDistanceFade[1], fadeTimer / fadeTime);
+
+            masterMixer.SetFloat("reverbDryLevel", Mathf.Lerp(dryLevelFade[0], dryLevelFade[1], fadeTimer / fadeTime));
+
+            fadeTimer += Time.deltaTime;
+            yield return null;
+        }
+        depthOfField.focusDistance.value = dofDistanceFade[1];
+        masterMixer.SetFloat("reverbDryLevel", dryLevelFade[1]);
+        awake = true;
     }
 }

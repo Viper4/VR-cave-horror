@@ -29,14 +29,15 @@ public class CaveRover : MonoBehaviour
     [SerializeField] Animator armAnimator;
     [SerializeField] GameObject beaconPrefab;
 
-    // Start is called before the first frame update
+    AudioSource _audio;
+
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
+        _audio = GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         float eulerX = transform.eulerAngles.x > 180 ? transform.eulerAngles.x - 360 : transform.eulerAngles.x;
@@ -45,10 +46,18 @@ public class CaveRover : MonoBehaviour
 
         bool isGrounded = Physics.Raycast(_collider.bounds.center, -transform.up, _collider.bounds.extents.y + 0.05f);
 
-        if(active && isGrounded)
+        if(active)
         {
-            _rigidbody.MovePosition(transform.position + (transform.forward * (joystick.direction.z * moveSpeed * Time.deltaTime)));
-            _rigidbody.MoveRotation(transform.rotation * Quaternion.Euler(transform.up * (joystick.direction.x * rotateSpeed * Time.deltaTime)));
+            _audio.volume = joystick.direction.magnitude;
+            if (isGrounded)
+            {
+                _rigidbody.MovePosition(transform.position + (transform.forward * (joystick.direction.z * moveSpeed * Time.deltaTime)));
+                _rigidbody.MoveRotation(transform.rotation * Quaternion.Euler(transform.up * (joystick.direction.x * rotateSpeed * Time.deltaTime)));
+            }
+        }
+        else
+        {
+            _audio.volume = 0;
         }
     }
 

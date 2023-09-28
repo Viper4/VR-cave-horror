@@ -25,6 +25,9 @@ public class TextAnimation : MonoBehaviour
 
     public void Play()
     {
+        if(!textBox)
+            textBox = GetComponent<TMP_Text>();
+
         if (animationRoutine != null)
             StopCoroutine(animationRoutine);
         animationRoutine = StartCoroutine(AnimationRoutine());
@@ -100,6 +103,10 @@ public class TextAnimation : MonoBehaviour
                     {
                         AnimationEnd();
                         yield break;
+                    }
+                    else
+                    {
+                        charInfo = textInfo.characterInfo[i];
                     }
                 }
 

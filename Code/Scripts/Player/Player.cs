@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
+    public static Player instance;
+
     ContinuousMoveProviderBase moveProvider;
     CharacterController characterController;
 
+    public bool useGravity;
     [SerializeField] Hand leftHand;
     [SerializeField] Hand rightHand;
     [SerializeField] float walkSpeed = 1;
     [SerializeField] float runSpeed = 3;
     public bool running { get; private set; }
-    public bool isGrounded { get; private set; }
 
     enum GroundMaterial { Dirt, Metal, Rock }
     GroundMaterial groundMaterial = GroundMaterial.Dirt;
@@ -38,7 +41,7 @@ public class Player : MonoBehaviour
     [SerializeField] float maxRunInterval = 0.5f;
     float runInterval;
 
-    float timer = 0;
+    float footstepTimer = 0;
 
     [Header("Events")]
     public bool inShelter;
@@ -48,16 +51,31 @@ public class Player : MonoBehaviour
     [SerializeField] UnityEvent enterCave;
     [SerializeField] UnityEvent exitCave;
 
+    private void OnEnable()
+    {
+        if (instance == null)
+            instance = this;
+    }
+
+    private void OnDisable()
+    {
+        if (instance == this)
+            instance = null;
+    }
+
     void Start()
     {
+        transform.SetPositionAndRotation(GameManager.instance.GetLoadedPosition(), GameManager.instance.GetLoadedRotation());
         moveProvider = GetComponent<ContinuousMoveProviderBase>();
         characterController = GetComponent<CharacterController>();
+        moveProvider.useGravity = useGravity;
+
+        StartCoroutine(SaveLoop());
     }
 
     void Update()
     {
-        isGrounded = Physics.Raycast(characterController.bounds.center, Vector3.down, characterController.bounds.extents.y + 0.1f);
-        if (isGrounded)
+        if (useGravity && Physics.Raycast(characterController.bounds.center, Vector3.down, characterController.bounds.extents.y + 0.1f))
         {
             // Footsteps
             if(moveProvider.locomotionPhase == LocomotionPhase.Moving)
@@ -65,7 +83,7 @@ public class Player : MonoBehaviour
                 if (running)
                 {
                     runInterval = Mathf.Lerp(maxRunInterval, minRunInterval, characterController.velocity.magnitude / runSpeed);
-                    if (timer >= runInterval)
+                    if (footstepTimer >= runInterval)
                     {
                         switch (groundMaterial)
                         {
@@ -79,13 +97,13 @@ public class Player : MonoBehaviour
                                 footstepAudio.PlayOneShot(rockWalkClips[Random.Range(0, rockWalkClips.Length)]);
                                 break;
                         }
-                        timer = 0;
+                        footstepTimer = 0;
                     }
                 }
                 else
                 {
                     walkInterval = Mathf.Lerp(maxWalkInterval, minWalkInterval, characterController.velocity.magnitude / walkSpeed);
-                    if (timer >= walkInterval)
+                    if (footstepTimer >= walkInterval)
                     {
                         switch (groundMaterial)
                         {
@@ -99,10 +117,10 @@ public class Player : MonoBehaviour
                                 footstepAudio.PlayOneShot(rockRunClips[Random.Range(0, rockRunClips.Length)]);
                                 break;
                         }
-                        timer = 0;
+                        footstepTimer = 0;
                     }
                 }
-                timer += Time.deltaTime;
+                footstepTimer += Time.deltaTime;
             }
             else if (moveProvider.locomotionPhase == LocomotionPhase.Done)
             {
@@ -188,5 +206,21 @@ public class Player : MonoBehaviour
                 exitCave?.Invoke();
                 break;
         }
+    }
+
+    public void SaveData()
+    {
+        if(SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            GameManager.instance.UpdatePlayerData(transform.position, transform.rotation);
+            GameManager.instance.SavePlayerData();
+        }
+    }
+
+    IEnumerator SaveLoop()
+    {
+        yield return new WaitForSeconds(30);
+        SaveData();
+        StartCoroutine(SaveLoop());
     }
 }

@@ -17,7 +17,7 @@ public class PlanetEnvironment : MonoBehaviour
 
     [SerializeField] float fogTime = 400;
     [SerializeField] float stormTime = 300;
-    float timer;
+    public float timer;
 
     [SerializeField] Light worldLight;
     [SerializeField] MeshRenderer skyFogRenderer;
@@ -40,6 +40,7 @@ public class PlanetEnvironment : MonoBehaviour
         if (instance == null)
             instance = this;
         fogDensity = minFogDensity;
+        timer = GameManager.instance.GetTime();
     }
 
     void Update()

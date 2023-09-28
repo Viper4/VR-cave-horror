@@ -4,27 +4,28 @@ using UnityEngine;
 
 public class ScreenFade : MonoBehaviour
 {
-    public float fadeDuration = 2;
     [SerializeField] Color fadeColor;
     MeshRenderer _meshRenderer;
+    public bool done { get; private set; } = true;
 
     void Awake()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
     }
 
-    public void Fade(float alphaA, float alphaB)
+    public void Fade(float alphaA, float alphaB, float duration)
     {
-        StartCoroutine(FadeRoutine(alphaA, alphaB));
+        StartCoroutine(FadeRoutine(alphaA, alphaB, duration));
     }
 
-    IEnumerator FadeRoutine(float alphaA, float alphaB)
+    IEnumerator FadeRoutine(float alphaA, float alphaB, float duration)
     {
+        done = false;
         float timer = 0;
-        while(timer < fadeDuration)
+        while(timer < duration)
         {
             Color lerpedColor = fadeColor;
-            lerpedColor.a = Mathf.Lerp(alphaA, alphaB, timer / fadeDuration);
+            lerpedColor.a = Mathf.Lerp(alphaA, alphaB, timer / duration);
 
             List<Material> newMaterials = new List<Material>();
             _meshRenderer.GetMaterials(newMaterials);
@@ -47,5 +48,20 @@ public class ScreenFade : MonoBehaviour
             finalMaterials[i].color = finalColor;
         }
         _meshRenderer.SetMaterials(finalMaterials);
+        done = true;
+        Debug.Log(done);
+    }
+
+    public void SetFade(float value)
+    {
+        Color color = fadeColor;
+        color.a = value;
+        List<Material> fadeMaterials = new List<Material>();
+        _meshRenderer.GetMaterials(fadeMaterials);
+        for (int i = 0; i < _meshRenderer.materials.Length; i++)
+        {
+            fadeMaterials[i].color = color;
+        }
+        _meshRenderer.SetMaterials(fadeMaterials);
     }
 }

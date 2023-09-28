@@ -29,7 +29,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -96,7 +96,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _AtmosphereRadius: 510
+    - _AtmosphereRadius: 645.1
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -118,7 +118,7 @@ Material:
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
-    - _PlanetRadius: 505
+    - _PlanetRadius: 638.1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
@@ -135,9 +135,9 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _LightColor: {r: 1, g: 0.9344161, b: 0.54402506, a: 1}
-    - _LightDirection: {r: -0.14739613, g: 0, b: -0.98907757, a: 0}
+    - _LightDirection: {r: -0.99948204, g: -2.9494507e-15, b: -0.03218288, a: 0}
     - _MieScattering: {r: 0.01, g: 0.9, b: 0, a: 3}
-    - _PlanetPosition: {r: 600, g: 0, b: 0, a: 0}
+    - _PlanetPosition: {r: 671.1, g: -0.00000059008596, b: -0.00000019915402, a: 0}
     - _RayleighScattering: {r: 1, g: 0.35, b: 0.05, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []

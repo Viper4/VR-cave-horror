@@ -604,7 +604,9 @@ MonoBehaviour:
   onTime: 0.25
   offColor: {r: 0, g: 0, b: 0, a: 0}
   onColor: {r: 1, g: 0, b: 0, a: 0}
+  changeLightColor: 0
   _light: {fileID: 6249579941885729048}
+  lightPattern: 
 --- !u!1 &6146897613049815976
 GameObject:
   m_ObjectHideFlags: 0

@@ -27,12 +27,6 @@ public class LeverInteractable : XRBaseInteractable
 
     Transform interactingHand;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -46,8 +40,12 @@ public class LeverInteractable : XRBaseInteractable
             float xAngle = pivot.localEulerAngles.x;
             float yAngle = pivot.localEulerAngles.y;
             float zAngle = pivot.localEulerAngles.z;
-
-            Debug.Log("Before: angle " + xAngle + ", distance " + yDistance);
+            /*if (xAngle > 180)
+                xAngle -= 360;
+            if (yAngle > 180)
+                yAngle -= 360;
+            if (zAngle > 180)
+                zAngle -= 360;*/
 
             switch (xDistanceMap)
             {
@@ -85,13 +83,12 @@ public class LeverInteractable : XRBaseInteractable
                     zAngle = Mathf.Lerp(startAngle, endAngle, zDistance);
                     break;
             }
-            if (xAngle < 0)
+            /*if (xAngle < 0)
                 xAngle += 360;
             if (yAngle < 0)
                 yAngle += 360;
             if (zAngle < 0)
-                zAngle += 360;
-            Debug.Log("After: angle " + xAngle + ", distance " + yDistance);
+                zAngle += 360;*/
 
             pivot.localEulerAngles = new Vector3(xAngle, yAngle, zAngle);
         }

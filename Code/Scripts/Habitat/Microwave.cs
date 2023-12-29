@@ -24,13 +24,9 @@ public class Microwave : MonoBehaviour
 
     bool running = false;
     float time = 0;
+    int digit = 0;
     bool minutes = true;
     bool doorClosed = true;
-
-    void Start()
-    {
-        
-    }
 
     void Update()
     {
@@ -78,18 +74,37 @@ public class Microwave : MonoBehaviour
     public void NumberPad(int number)
     {
         screenAudio.Play();
-        if (time * 10 > 6039) // 99 minutes 99 seconds
-            time = 0;
-        else
-            time *= 10;
+        time *= 10;
 
         if(number != 0)
         {
             if (minutes)
-                time += number * 60;
+            {
+                if(digit > 1)
+                {
+                    time = 0;
+                    digit = 0;
+                }
+                else
+                {
+                    time += number * 60;
+                }
+            }
             else
-                time += number;
+            {
+                if(digit > 1)
+                {
+                    time = 0;
+                    digit = 0;
+                }
+                else
+                {
+                    time += number;
+                }
+            }
         }
+        if(time != 0)
+            digit++;
         UpdateTimer();
     }
 
@@ -104,6 +119,7 @@ public class Microwave : MonoBehaviour
 
     public void StopButton()
     {
+        digit = 0;
         screenAudio.Play();
         if (running)
             TurnOff();
@@ -114,6 +130,7 @@ public class Microwave : MonoBehaviour
 
     void TurnOn()
     {
+        digit = 0;
         running = true;
         rotateT = 0;
         _light.SetActive(true);
@@ -122,6 +139,7 @@ public class Microwave : MonoBehaviour
 
     void TurnOff()
     {
+        digit = 0;
         running = false;
         _light.SetActive(false);
         microwaveAudio.Stop();
@@ -130,8 +148,7 @@ public class Microwave : MonoBehaviour
 
     void UpdateTimer()
     {
-        TimeSpan t = TimeSpan.FromSeconds(time);
-        timerText.text = t.ToString(@"mm\:ss");
+        timerText.text = TimeSpan.FromSeconds(time).ToString(@"mm\:ss");
     }
 
     IEnumerator MicrowaveDone()

@@ -29,25 +29,10 @@ public class BaseUI : MonoBehaviour
         vignetteController = Camera.main.GetComponent<TunnelingVignetteController>();
     }
 
-    public void Settings()
-    {
-        mainMenu.SetActive(false);
-        settingsMenu.SetActive(true);
-    }
-
     public void Quit()
     {
         Player.instance.SaveData();
         Application.Quit();
-    }
-
-    public void Back()
-    {
-        if (settingsMenu.activeSelf)
-        {
-            mainMenu.SetActive(true);
-            settingsMenu.SetActive(false);
-        }
     }
 
     public void ChangeMasterVolume(Slider slider)

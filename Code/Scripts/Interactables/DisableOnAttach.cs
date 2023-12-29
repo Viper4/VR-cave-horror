@@ -26,16 +26,6 @@ public class DisableOnAttach : MonoBehaviour
         interactable.selectExited.AddListener(SelectExit);
     }
 
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
-    }
-
     void SelectEnter(SelectEnterEventArgs args)
     {
         if(disableCollider)

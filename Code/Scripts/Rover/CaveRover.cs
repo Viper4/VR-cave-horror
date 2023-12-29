@@ -44,7 +44,8 @@ public class CaveRover : MonoBehaviour
         float eulerZ = transform.eulerAngles.z > 180 ? transform.eulerAngles.z - 360 : transform.eulerAngles.z;
         transform.eulerAngles = new Vector3(Mathf.Clamp(eulerX, -xAngleLimit, xAngleLimit), transform.eulerAngles.y, Mathf.Clamp(eulerZ, -zAngleLimit, zAngleLimit));
 
-        bool isGrounded = Physics.Raycast(_collider.bounds.center, -transform.up, _collider.bounds.extents.y + 0.05f);
+        bool isGrounded = Physics.Raycast(_collider.bounds.center, -transform.up, _collider.bounds.extents.y + 0.15f);
+        Debug.DrawLine(_collider.bounds.center, _collider.bounds.center - transform.up * (_collider.bounds.extents.y + 0.1f), Color.red, 0.15f);
 
         if(active)
         {

@@ -14,9 +14,7 @@ public class GrabMoveInteractable : XRBaseInteractable
 
     protected override void OnSelectEntered(SelectEnterEventArgs args)
     {
-
         base.OnSelectEntered(args);
-        Debug.Log("Select Enter: " + args.interactorObject.transform.name);
         Hand interactorHand = args.interactorObject.transform.parent.GetComponent<Hand>();
         handGrabMovement.AddHand(interactorHand);
     }
@@ -24,7 +22,6 @@ public class GrabMoveInteractable : XRBaseInteractable
     protected override void OnSelectExited(SelectExitEventArgs args)
     {
         base.OnSelectExited(args);
-        Debug.Log("Select Exit: " + args.interactorObject.transform.name);
         handGrabMovement.RemoveHand(args.interactorObject.transform.parent.GetComponent<Hand>());
     }
 }

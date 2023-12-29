@@ -7,9 +7,12 @@ using TMPro;
 
 public class SceneLoader : MonoBehaviour
 {
+    public static SceneLoader instance;
+
     [SerializeField] ScreenFade screenFade;
     [SerializeField] bool fadeOnLoad = true;
     [SerializeField] float fadeTime = 2;
+    [SerializeField] float screenDistance = 1;
 
     [SerializeField] GameObject loadingScreen;
     [SerializeField] TextAnimation loadingAnimation;
@@ -19,36 +22,44 @@ public class SceneLoader : MonoBehaviour
 
     private void Start()
     {
+        instance = this;
         if (fadeOnLoad)
             screenFade.Fade(1, 0, fadeTime);
     }
 
-    public void LoadScene(int index, bool resume, bool fade = true)
-    {
-        if (resume)
-            GameManager.instance.LoadLatestPlayerData();
+    public void LoadScene(int index, bool fade = true)
+    {            
         StartCoroutine(LoadSceneRoutine(index, fade));
     }
 
-    private IEnumerator LoadSceneRoutine(int sceneIndex, bool fade)
+    public void LoadSave(bool fade = true)
     {
-        if (!loadingScene)
+        PlayerData latestPlayerData = GameManager.instance.LoadLatestPlayerData();
+        if(latestPlayerData != null)
+            StartCoroutine(LoadSceneRoutine(latestPlayerData.sceneIndex, fade, true));
+        else
+            StartCoroutine(LoadSceneRoutine(1, fade));
+    }
+
+    private IEnumerator LoadSceneRoutine(int sceneIndex, bool fade, bool loadingSave = false)
+    {
+        if(!loadingScene)
         {
             loadingScene = true;
 
             loadingScreen.SetActive(true);
-            loadingScreen.transform.SetPositionAndRotation(Camera.main.transform.position + (Camera.main.transform.forward * 0.5f), Quaternion.LookRotation(Camera.main.transform.forward, Player.instance.transform.up)); loadingScreen.SetActive(true);
+            loadingScreen.transform.SetPositionAndRotation(Camera.main.transform.position + (Camera.main.transform.forward * screenDistance), Quaternion.LookRotation(Camera.main.transform.forward, Player.instance.transform.up)); 
             loadingAnimation.Play();
 
-            if (fade)
-                screenFade.Fade(0, 1, 2);
+            if(fade)
+                screenFade.Fade(1, 2);
 
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneIndex);
 
             asyncLoad.allowSceneActivation = false;
 
             float progress = 0;
-            while (progress < 1)
+            while(progress < 1)
             {
                 progress = Mathf.Clamp01(asyncLoad.progress / .9f);
 
@@ -59,6 +70,11 @@ public class SceneLoader : MonoBehaviour
             yield return new WaitUntil(() => screenFade.done);
             asyncLoad.allowSceneActivation = true;
             loadingScene = false;
+            if(loadingSave)
+            {
+                yield return new WaitUntil(() => Player.instance != null);
+                Player.instance.UpdateWithLoadedData();
+            }
         }
     }
 }

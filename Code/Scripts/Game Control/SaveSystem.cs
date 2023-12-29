@@ -53,7 +53,7 @@ public static class SaveSystem
         }
         else
         {
-            Debug.LogWarning("Could not find file \"" + filePath + "\", saving and returning current player data.");
+            Debug.LogWarning("Could not find file \"" + filePath + "\", saving and returning default player data.");
 
             Save(fileName, defaultPlayerData);
 
@@ -69,11 +69,28 @@ public static class SaveSystem
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream stream = latestFile.Open(FileMode.Open);
 
-            PlayerData loadedPlayerData = (PlayerData)formatter.Deserialize(stream);
-            stream.Close();
-            return loadedPlayerData;
+            try
+            {
+                PlayerData loadedPlayerData = (PlayerData)formatter.Deserialize(stream);
+                stream.Close();
+                return loadedPlayerData;
+            }
+            catch(System.Exception e)
+            {
+                Debug.LogWarning("Failed to deserialize \"" + latestFile.Name + "\": " + e.Message);
+                return null;
+            }
         }
         return null;
+    }
+
+    public static void DeleteLatest()
+    {
+        FileInfo latestFile = new DirectoryInfo(SAVE_FOLDER).GetFiles("*.save", SearchOption.AllDirectories).OrderByDescending(f => f.LastWriteTime).FirstOrDefault();
+        if (latestFile != null)
+        {
+            latestFile.Delete();
+        }
     }
 
     public static bool HasSave()

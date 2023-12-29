@@ -11,15 +11,15 @@ public class StarSystem : MonoBehaviour
     [SerializeField] Transform atmosphere;
     Material atmosphereMaterial;
     [SerializeField] Vector3 planetRotationAxis = Vector3.up;
-    [SerializeField] float planetRotateSpeed = 1;
+    public float planetRotateSpeed = 1;
     [SerializeField] float planetScaleFactor = 1000;
 
     [SerializeField] Transform star;
     [SerializeField] Vector3 starOffset;
     [SerializeField] Vector3 starScale;
     [SerializeField] float starOrbitRadius = 100000;
-    [SerializeField] float starOrbitSpeed = 1;
-    float orbitTimer = 0;
+    public float starOrbitSpeed = 1;
+    float orbitAngle = 0;
     [SerializeField] float starScaleFactor = 1000;
 
     [SerializeField] Transform directionalLight;
@@ -36,27 +36,26 @@ public class StarSystem : MonoBehaviour
         star.localScale = new Vector3((float)(starScale.x / starScaleFactor), (float)(starScale.y / starScaleFactor), (float)(starScale.z / starScaleFactor));
     }
 
-    void Update()
+    void LateUpdate()
     {
         planet.position = new Vector3((float)((planetPosition.x - cameraTransform.position.x) / planetScaleFactor + cameraTransform.position.x), (float)((planetPosition.y - cameraTransform.position.y) / planetScaleFactor + cameraTransform.position.y), (float)((planetPosition.z - cameraTransform.position.z) / planetScaleFactor + cameraTransform.position.z));
 
-        float x = Mathf.Cos(orbitTimer) * starOrbitRadius + starOffset.x + planetPosition.x;
-        float z = Mathf.Sin(orbitTimer) * starOrbitRadius + starOffset.z + planetPosition.z;
-        Vector3 toPlanet = (planet.position - new Vector3(x, starOffset.y + planetPosition.y, z)).normalized;
+        orbitAngle += starOrbitSpeed * Time.deltaTime;
+        if(orbitAngle > 360)
+            orbitAngle = 0;
+        Vector3 toPlanet = Quaternion.AngleAxis(orbitAngle, Vector3.up) * -Vector3.forward;
         atmosphereMaterial.SetVector("_LightDirection", toPlanet);
         atmosphereMaterial.SetVector("_PlanetPosition", planet.position);
         planet.Rotate(planetRotateSpeed * Time.deltaTime * planetRotationAxis);
 
-        orbitTimer += starOrbitSpeed * Time.deltaTime;
-        float signedAngle = -Vector3.SignedAngle(Vector3.forward, toPlanet, Vector3.up);
-        if (signedAngle < 0)
-            signedAngle += 360;
-        RenderSettings.skybox.SetFloat("_Rotation", signedAngle);
+        Vector3 starPosition = new Vector3(-toPlanet.x * starOrbitRadius + starOffset.x + planetPosition.x, starOffset.y, -toPlanet.z * starOrbitRadius + starOffset.z + planetPosition.z);
 
-        star.position = new Vector3((float)((x - cameraTransform.position.x) / starScaleFactor + cameraTransform.position.x), (float)((starOffset.y + planetPosition.y - cameraTransform.position.y) / starScaleFactor + cameraTransform.position.y), (float)((z - cameraTransform.position.z) / starScaleFactor + cameraTransform.position.z));
+        RenderSettings.skybox.SetFloat("_Rotation", 360 - orbitAngle);
+
+        star.position = new Vector3((float)((starPosition.x - cameraTransform.position.x) / starScaleFactor + cameraTransform.position.x), (float)((starPosition.y + planetPosition.y - cameraTransform.position.y) / starScaleFactor + cameraTransform.position.y), (float)((starPosition.z - cameraTransform.position.z) / starScaleFactor + cameraTransform.position.z));
 
         directionalLight.rotation = Quaternion.LookRotation(toPlanet);
-        foreach (Transform solarArray in solarArrays)
+        foreach(Transform solarArray in solarArrays)
         {
             solarArray.rotation = Quaternion.LookRotation(toPlanet, solarArray.up);
         }

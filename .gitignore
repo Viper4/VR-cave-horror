@@ -70,3 +70,8 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Certain textures too big for commit
+Airlock1Body_Normal.png
+Corridor1Body_Normal.png
+CenterBody_Normal.png

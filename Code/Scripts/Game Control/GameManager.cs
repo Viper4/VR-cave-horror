@@ -19,12 +19,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void LoadLatestPlayerData()
+    public PlayerData LoadLatestPlayerData()
     {
         currentPlayerData = SaveSystem.LoadLatest();
+        return currentPlayerData;
     }
 
-    public void UpdatePlayerData(Vector3 pos, Quaternion rot)
+    public void UpdatePlayerData(Vector3 pos, Quaternion rot, int sceneIndex)
     {
         currentPlayerData.pos_x = pos.x;
         currentPlayerData.pos_y = pos.y;
@@ -35,12 +36,17 @@ public class GameManager : MonoBehaviour
         currentPlayerData.rot_z = rot.z;
         currentPlayerData.rot_w = rot.w;
 
-        if (PlanetEnvironment.instance != null)
+        if(PlanetEnvironment.instance != null)
             currentPlayerData.time = PlanetEnvironment.instance.timer;
+        else if(SpaceEnvironment.instance != null)
+            currentPlayerData.time = SpaceEnvironment.instance.timer;
+
+        currentPlayerData.sceneIndex = sceneIndex;
     }
 
     public void SavePlayerData()
     {
+        Debug.Log("Saved player data");
         SaveSystem.Save("PlayerData", currentPlayerData);
     }
 
@@ -54,8 +60,13 @@ public class GameManager : MonoBehaviour
         return new Quaternion(currentPlayerData.rot_x, currentPlayerData.rot_y, currentPlayerData.rot_z, currentPlayerData.rot_w);
     }
 
-    public float GetTime()
+    public float GetLoadedTime()
     {
         return currentPlayerData.time;
+    }
+
+    public int GetLoadedSceneIndex()
+    {
+        return currentPlayerData.sceneIndex;
     }
 }

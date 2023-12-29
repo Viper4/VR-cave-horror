@@ -18,6 +18,7 @@ public class Hand : MonoBehaviour
     public float triggerValue { get; private set; }
     public float gripValue { get; private set; }
     public Vector2 primaryAxisPosition { get; private set; }
+    public float primaryAxisClick { get; private set; }
     public Vector3 velocity { get; private set; }
 
     private void OnEnable()
@@ -46,6 +47,7 @@ public class Hand : MonoBehaviour
         triggerValue = triggerAction.action.ReadValue<float>();
         gripValue = gripAction.action.ReadValue<float>();
         primaryAxisPosition = primaryAxisTouchAction.action.ReadValue<Vector2>();
+        primaryAxisClick = primaryAxisClickAction.action.ReadValue<float>();
         velocity = velocityAction.action.ReadValue<Vector3>();
 
         if (animator != null)
@@ -53,10 +55,12 @@ public class Hand : MonoBehaviour
             animator.SetFloat("Trigger", triggerValue);
             animator.SetFloat("Grip", gripValue);
         }
+
+        player.running = primaryAxisClick > 0.5f;
     }
 
     private void PrimaryAxisClick(InputAction.CallbackContext callbackContext)
     {
-        player.ToggleRun();
+
     }
 }

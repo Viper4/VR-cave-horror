@@ -22,11 +22,6 @@ public class LightControl : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        
-    }
-
     public void ToggleLights(int index)
     {
         activeLights[index] = !activeLights[index];

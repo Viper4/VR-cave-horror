@@ -7,6 +7,7 @@ public class ScreenFade : MonoBehaviour
     [SerializeField] Color fadeColor;
     MeshRenderer _meshRenderer;
     public bool done { get; private set; } = true;
+    float alpha;
 
     void Awake()
     {
@@ -18,6 +19,11 @@ public class ScreenFade : MonoBehaviour
         StartCoroutine(FadeRoutine(alphaA, alphaB, duration));
     }
 
+    public void Fade(float alphaB, float duration)
+    {
+        Fade(alpha, alphaB, duration);
+    }
+
     IEnumerator FadeRoutine(float alphaA, float alphaB, float duration)
     {
         done = false;
@@ -25,7 +31,7 @@ public class ScreenFade : MonoBehaviour
         while(timer < duration)
         {
             Color lerpedColor = fadeColor;
-            lerpedColor.a = Mathf.Lerp(alphaA, alphaB, timer / duration);
+            alpha = lerpedColor.a = Mathf.Lerp(alphaA, alphaB, timer / duration);
 
             List<Material> newMaterials = new List<Material>();
             _meshRenderer.GetMaterials(newMaterials);
@@ -43,13 +49,12 @@ public class ScreenFade : MonoBehaviour
         finalColor.a = alphaB;
         List<Material> finalMaterials = new List<Material>();
         _meshRenderer.GetMaterials(finalMaterials);
-        for (int i = 0; i < _meshRenderer.materials.Length; i++)
+        for(int i = 0; i < _meshRenderer.materials.Length; i++)
         {
             finalMaterials[i].color = finalColor;
         }
         _meshRenderer.SetMaterials(finalMaterials);
         done = true;
-        Debug.Log(done);
     }
 
     public void SetFade(float value)

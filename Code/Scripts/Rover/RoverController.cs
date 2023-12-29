@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.XR.Interaction.Toolkit;
 
+[RequireComponent(typeof(XRGrabInteractable))]
 public class RoverController : MonoBehaviour
 {
+    XRGrabInteractable interactable;
+
     [SerializeField] bool active = false;
     bool booted = false;
     [SerializeField] Animation bootUpAnimation;
@@ -30,6 +34,36 @@ public class RoverController : MonoBehaviour
 
     bool audioConnected = true;
 
+    void OnEnable()
+    {
+        interactable = GetComponent<XRGrabInteractable>();
+
+        interactable.hoverEntered.AddListener(HoverEnter);
+        interactable.hoverExited.AddListener(HoverExit);
+    }
+
+    private void OnDisable()
+    {
+        interactable.hoverEntered.RemoveListener(HoverEnter);
+        interactable.hoverExited.RemoveListener(HoverExit);
+    }
+
+    private void HoverEnter(HoverEnterEventArgs args)
+    {
+        Debug.Log("Entered: " + interactable.isSelected);
+        if (!interactable.isSelected)
+        {
+            args.interactorObject.transform.GetComponent<XRBaseControllerInteractor>().selectActionTrigger = XRBaseControllerInteractor.InputTriggerType.Toggle;
+        }
+    }
+
+    private void HoverExit(HoverExitEventArgs args)
+    {
+        Debug.Log("Hover Exit Before: " + args.interactorObject.transform.GetComponent<XRBaseControllerInteractor>().selectActionTrigger);
+        args.interactorObject.transform.GetComponent<XRBaseControllerInteractor>().selectActionTrigger = XRBaseControllerInteractor.InputTriggerType.StateChange;
+        Debug.Log("Hover Exit After: " + args.interactorObject.transform.GetComponent<XRBaseControllerInteractor>().selectActionTrigger);
+    }
+
     void Update()
     {
         float depth = Mathf.Round(-rover.transform.position.y * 100) / 100;
@@ -40,7 +74,11 @@ public class RoverController : MonoBehaviour
 
     public void TogglePower()
     {
-        if (booted)
+        active = !active;
+        screenCanvas.gameObject.SetActive(active);
+        screenLight.enabled = active;
+
+        /*if (booted)
         {
             active = !active;
             screenCanvas.gameObject.SetActive(active);
@@ -49,16 +87,16 @@ public class RoverController : MonoBehaviour
         else if(!bootUpAnimation.isPlaying)
         {
             StartCoroutine(BootUp());
-        }
+        }*/
     }
 
-    IEnumerator BootUp()
+    /*IEnumerator BootUp()
     {
         bootUpAnimation.Play();
         yield return new WaitUntil(() => !bootUpAnimation.isPlaying);
         booted = true;
         active = true;
-    }
+    }*/
 
     public void ToggleHeadlights()
     {

@@ -25,17 +25,17 @@ public class TextAnimation : MonoBehaviour
 
     public void Play()
     {
-        if(!textBox)
+        if(textBox == null)
             textBox = GetComponent<TMP_Text>();
 
-        if (animationRoutine != null)
+        if(animationRoutine != null)
             StopCoroutine(animationRoutine);
         animationRoutine = StartCoroutine(AnimationRoutine());
     }
 
     public void Stop()
     {
-        if (animationRoutine != null)
+        if(animationRoutine != null)
             StopCoroutine(animationRoutine);
     }
 

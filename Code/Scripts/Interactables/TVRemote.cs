@@ -54,7 +54,8 @@ public class TVRemote : MonoBehaviour
 
     public void StartAdjustVolume()
     {
-        StopCoroutine(hideVolumeRoutine);
+        if(hideVolumeRoutine != null)
+            StopCoroutine(hideVolumeRoutine);
         volumeImage.SetActive(true);
         adjustVolume = true;
     }

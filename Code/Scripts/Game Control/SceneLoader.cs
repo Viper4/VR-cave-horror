@@ -34,14 +34,14 @@ public class SceneLoader : MonoBehaviour
 
     public void LoadSave(bool fade = true)
     {
-        PlayerData latestPlayerData = GameManager.instance.LoadLatestPlayerData();
-        if(latestPlayerData != null)
-            StartCoroutine(LoadSceneRoutine(latestPlayerData.sceneIndex, fade, true));
+        GameManager.instance.LoadLatestPlayerData();
+        if(GameManager.instance.currentPlayerData != null)
+            StartCoroutine(LoadSceneRoutine(GameManager.instance.currentPlayerData.sceneIndex, fade));
         else
             StartCoroutine(LoadSceneRoutine(1, fade));
     }
 
-    private IEnumerator LoadSceneRoutine(int sceneIndex, bool fade, bool loadingSave = false)
+    private IEnumerator LoadSceneRoutine(int sceneIndex, bool fade)
     {
         if(!loadingScene)
         {
@@ -70,11 +70,6 @@ public class SceneLoader : MonoBehaviour
             yield return new WaitUntil(() => screenFade.done);
             asyncLoad.allowSceneActivation = true;
             loadingScene = false;
-            if(loadingSave)
-            {
-                yield return new WaitUntil(() => Player.instance != null);
-                Player.instance.UpdateWithLoadedData();
-            }
         }
     }
 }

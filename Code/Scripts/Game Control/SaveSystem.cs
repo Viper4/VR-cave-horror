@@ -11,13 +11,7 @@ public static class SaveSystem
 
     public static readonly PlayerData defaultPlayerData = new PlayerData
     {
-        pos_x = 0,
-        pos_y = 0,
-        pos_z = 0,
-        rot_x = 0,
-        rot_y = 0,
-        rot_z = 0,
-        rot_w = 0,
+        saveObjectInfos = null,
         time = 0,
         sceneIndex = -1,
     };

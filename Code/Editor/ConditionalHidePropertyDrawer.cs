@@ -37,6 +37,7 @@ public class ConditionalHidePropertyDrawer : PropertyDrawer
         SerializedProperty sourcePropertyValue = null;
 
         //Get the full relative property path of the sourcefield so we can have nested hiding.Use old method when dealing with arrays
+        //Debug.Log("Property: " + property.name + ", typeName: " + property.type + ", propType: " + property.propertyType);
         if (!property.isArray)
         {
             string propertyPath = property.propertyPath; //returns the property path of the property we want to apply the attribute to

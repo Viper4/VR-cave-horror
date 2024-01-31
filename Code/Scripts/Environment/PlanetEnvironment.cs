@@ -40,7 +40,8 @@ public class PlanetEnvironment : MonoBehaviour
         if (instance == null)
             instance = this;
         fogDensity = minFogDensity;
-        timer = GameManager.instance.GetLoadedTime();
+        if (GameManager.instance.currentPlayerData != null)
+            timer = GameManager.instance.currentPlayerData.time;
     }
 
     void Update()

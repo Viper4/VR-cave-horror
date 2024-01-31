@@ -11,8 +11,6 @@ public class RoverController : MonoBehaviour
     XRGrabInteractable interactable;
 
     [SerializeField] bool active = false;
-    bool booted = false;
-    [SerializeField] Animation bootUpAnimation;
 
     [SerializeField] Canvas screenCanvas;
     [SerializeField] Light screenLight;
@@ -21,10 +19,11 @@ public class RoverController : MonoBehaviour
     [SerializeField] Joystick joystick;
 
     [SerializeField] CaveRover rover;
-    bool roverConnected = true;
     bool headlightsOn = true;
+    [SerializeField] float maxConnectDistance = 30;
+    [SerializeField] Image staticImage;
 
-    uint previousCamera = 0;
+    uint currentCamera = 0;
     [SerializeField] GameObject[] cameras;
     bool[] cameraStates = new bool[] { true, true, true };
     [SerializeField] TextMeshProUGUI depthText;
@@ -40,28 +39,39 @@ public class RoverController : MonoBehaviour
 
         interactable.hoverEntered.AddListener(HoverEnter);
         interactable.hoverExited.AddListener(HoverExit);
+
+        interactable.selectEntered.AddListener(SelectEnter);
+        interactable.selectExited.AddListener(SelectExit);
     }
 
     private void OnDisable()
     {
         interactable.hoverEntered.RemoveListener(HoverEnter);
         interactable.hoverExited.RemoveListener(HoverExit);
+
+        interactable.selectEntered.RemoveListener(SelectEnter);
+        interactable.selectExited.RemoveListener(SelectExit);
     }
 
     private void HoverEnter(HoverEnterEventArgs args)
     {
-        Debug.Log("Entered: " + interactable.isSelected);
-        if (!interactable.isSelected)
-        {
-            args.interactorObject.transform.GetComponent<XRBaseControllerInteractor>().selectActionTrigger = XRBaseControllerInteractor.InputTriggerType.Toggle;
-        }
+        args.interactorObject.transform.GetComponent<XRBaseControllerInteractor>().selectActionTrigger = XRBaseControllerInteractor.InputTriggerType.Toggle;
     }
 
     private void HoverExit(HoverExitEventArgs args)
     {
-        Debug.Log("Hover Exit Before: " + args.interactorObject.transform.GetComponent<XRBaseControllerInteractor>().selectActionTrigger);
+        if (interactable.firstInteractorSelecting == null || interactable.firstInteractorSelecting.transform != args.interactorObject.transform)
+            args.interactorObject.transform.GetComponent<XRBaseControllerInteractor>().selectActionTrigger = XRBaseControllerInteractor.InputTriggerType.StateChange;
+    }
+
+    private void SelectEnter(SelectEnterEventArgs args)
+    {
+
+    }
+
+    private void SelectExit(SelectExitEventArgs args)
+    {
         args.interactorObject.transform.GetComponent<XRBaseControllerInteractor>().selectActionTrigger = XRBaseControllerInteractor.InputTriggerType.StateChange;
-        Debug.Log("Hover Exit After: " + args.interactorObject.transform.GetComponent<XRBaseControllerInteractor>().selectActionTrigger);
     }
 
     void Update()
@@ -70,6 +80,30 @@ public class RoverController : MonoBehaviour
         if (depth < 0)
             depth = 0;
         depthText.text = depth.ToString() + "m";
+
+        if (rover.nearbyConnections.Count > 0 && cameraStates[currentCamera])
+            staticImage.color = new Color(1, 1, 1, Mathf.Lerp(0, 1, rover.connectionDistance / (maxConnectDistance * maxConnectDistance)));
+        else
+            staticImage.color = new Color(1, 1, 1, 0);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Rover"))
+        {
+            if(!rover.nearbyConnections.Contains(transform))
+                rover.nearbyConnections.Add(transform);
+            UpdateConnection();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Rover"))
+        {
+            rover.nearbyConnections.Remove(transform);
+            UpdateConnection();
+        }
     }
 
     public void TogglePower()
@@ -77,26 +111,8 @@ public class RoverController : MonoBehaviour
         active = !active;
         screenCanvas.gameObject.SetActive(active);
         screenLight.enabled = active;
-
-        /*if (booted)
-        {
-            active = !active;
-            screenCanvas.gameObject.SetActive(active);
-            screenLight.enabled = active;
-        }
-        else if(!bootUpAnimation.isPlaying)
-        {
-            StartCoroutine(BootUp());
-        }*/
+        UpdateConnection();
     }
-
-    /*IEnumerator BootUp()
-    {
-        bootUpAnimation.Play();
-        yield return new WaitUntil(() => !bootUpAnimation.isPlaying);
-        booted = true;
-        active = true;
-    }*/
 
     public void ToggleHeadlights()
     {
@@ -115,44 +131,71 @@ public class RoverController : MonoBehaviour
         }
     }
 
+    public void UpdateConnection()
+    {
+        string roverStatus;
+        string[] cameraStatus = new string[3];
+        string audioStatus;
+        if (rover.nearbyConnections.Count == 0)
+        {
+            noSignalTitle.text = "No Signal";
+            roverStatus = "Controls (SR7): <color=red>001408b (Failed to connect) 0</color>";
+            cameraStatus[0] = "\nCam1 (Normal): <color=red>001408b (Failed to connect) 0</color>";
+            cameraStatus[1] = "\nCam2 (NV): <color=red>001408b (Failed to connect) 0</color>";
+            cameraStatus[2] = "\nCam3 (IR): <color=red>001408b (Failed to connect) 0</color>";
+            audioStatus = "\nAudio: <color=red>001408b (Failed to connect) 0</color>";
+
+            noSignalImage.enabled = true;
+            noSignalStatusText.text = roverStatus + cameraStatus[0] + cameraStatus[1] + cameraStatus[2] + audioStatus;
+            noSignalStatusText.enabled = true;
+            screenLight.color = Color.grey;
+            noSignalImage.gameObject.SetActive(true);
+        }
+        else
+        {
+            if (cameraStates[currentCamera])
+            {
+                if (audioConnected)
+                {
+                    noSignalImage.gameObject.SetActive(false);
+                }
+                else
+                {
+                    noSignalImage.enabled = false;
+                    noSignalTitle.text = "No Audio";
+                    noSignalStatusText.enabled = false;
+                    noSignalImage.gameObject.SetActive(true);
+                }
+                cameras[currentCamera].SetActive(true);
+            }
+            else
+            {
+                noSignalTitle.text = "No Video";
+                roverStatus = "Controls (SR7): <color=green>OK</color>";
+                cameraStatus[0] = cameraStates[0] ? "\nCam1 (Normal): <color=green> OK</color>" : "\nCam1 (Normal): <color=red>001408b (Failed to connect) 0</color>";
+                cameraStatus[1] = cameraStates[1] ? "\nCam2 (NV): <color=green> OK</color>" : "\nCam2 (NV): <color=red>001408b (Failed to connect) 0</color>";
+                cameraStatus[2] = cameraStates[2] ? "\nCam3 (IR): <color=green> OK</color>" : "\nCam3 (IR): <color=red>001408b (Failed to connect) 0</color>";
+                audioStatus = audioConnected ? "\nAudio: <color=green>OK</color>" : "\nAudio: <color=red>001408b (Failed to connect) 0</color>";
+
+                noSignalImage.enabled = true;
+                noSignalStatusText.text = roverStatus + cameraStatus[0] + cameraStatus[1] + cameraStatus[2] + audioStatus;
+                noSignalStatusText.enabled = true;
+                screenLight.color = Color.grey;
+                noSignalImage.gameObject.SetActive(true);
+            }
+        }
+    }
+
     public void SwitchCamera(VRSwitch vrSwitch)
     {
         vrSwitch.currentState++;
         if (vrSwitch.currentState >= cameraStates.Length)
             vrSwitch.currentState = 0; 
-        cameras[previousCamera].SetActive(false);
-        if (roverConnected && cameraStates[vrSwitch.currentState])
-        {
-            if (audioConnected)
-            {
-                noSignalImage.gameObject.SetActive(false);
-            }
-            else
-            {
-                noSignalImage.enabled = false;
-                noSignalTitle.text = "No Audio";
-                noSignalStatusText.enabled = false;
-                noSignalImage.gameObject.SetActive(true);
-            }
-            screenLight.color = lightColors[vrSwitch.currentState];
-            cameras[vrSwitch.currentState].SetActive(true);
-        }
-        else
-        {
-            noSignalTitle.text = roverConnected ? "No Video" : "No Signal";
+        cameras[currentCamera].SetActive(false);
+        screenLight.color = lightColors[vrSwitch.currentState];
 
-            string roverStatus = roverConnected ? "Controls (SR7): <color=green>OK</color>" : "Controls (SR7): <color=red>001408b (Failed to connect) 0</color>";
-            string cameraOneStatus = roverConnected && cameraStates[0] ? "\nCam1 (Normal): <color=green> OK</color>" : "\nCam1 (Normal): <color=red>001408b (Failed to connect) 0</color>";
-            string cameraTwoStatus = roverConnected && cameraStates[1] ? "\nCam2 (NV): <color=green> OK</color>" : "\nCam2 (NV): <color=red>001408b (Failed to connect) 0</color>";
-            string cameraThreeStatus = roverConnected && cameraStates[2] ? "\nCam3 (TC): <color=green> OK</color>" : "\nCam3 (TC): <color=red>001408b (Failed to connect) 0</color>";
-            string audioStatus = roverConnected && audioConnected ? "\nAudio: <color=green>OK</color>" : "\nAudio: <color=red>001408b (Failed to connect) 0</color>";
+        currentCamera = vrSwitch.currentState;
 
-            noSignalStatusText.text = roverStatus + cameraOneStatus + cameraTwoStatus + cameraThreeStatus + audioStatus;
-            noSignalStatusText.enabled = true;
-            screenLight.color = Color.grey;
-            noSignalImage.gameObject.SetActive(true);
-        }
-
-        previousCamera = vrSwitch.currentState;
+        UpdateConnection();
     }
 }

@@ -10,7 +10,6 @@ public class MusicControl : MonoBehaviour
     [SerializeField] float maxDelay = 12;
     int previousClipIndex = 0;
 
-
     void Start()
     {
         audioSource = GetComponent<AudioSource>();

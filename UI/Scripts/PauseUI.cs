@@ -1,10 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
-using TMPro;
-using UnityEngine.XR.Interaction.Toolkit;
-using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
-using UnityEngine.Audio;
 
 public class PauseUI : BaseUI
 {
@@ -41,6 +36,8 @@ public class PauseUI : BaseUI
 
     private void Pause()
     {
+        AudioListener.pause = true;
+        Time.timeScale = 0;
         Vector3 flatCameraForward = mainCameraTransform.forward;
         flatCameraForward.y = 0;
         flatCameraForward.Normalize();
@@ -53,6 +50,8 @@ public class PauseUI : BaseUI
 
     public void Resume() // In game
     {
+        AudioListener.pause = false;
+        Time.timeScale = 1;
         mainMenu.SetActive(true);
         settingsMenu.SetActive(false);
         pauseCanvas.enabled = false;

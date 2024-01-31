@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class CaveRover : MonoBehaviour
 {
-    [SerializeField] bool active = true;
-
     [Header("Properties")]
     [SerializeField] float moveSpeed = 2;
     [SerializeField] float rotateSpeed = 2;
@@ -29,7 +27,11 @@ public class CaveRover : MonoBehaviour
     [SerializeField] Animator armAnimator;
     [SerializeField] GameObject beaconPrefab;
 
+    [SerializeField] float volumeMultiplier = 1;
     AudioSource _audio;
+
+    public List<Transform> nearbyConnections = new List<Transform>();
+    public float connectionDistance;
 
     void Start()
     {
@@ -47,9 +49,22 @@ public class CaveRover : MonoBehaviour
         bool isGrounded = Physics.Raycast(_collider.bounds.center, -transform.up, _collider.bounds.extents.y + 0.15f);
         Debug.DrawLine(_collider.bounds.center, _collider.bounds.center - transform.up * (_collider.bounds.extents.y + 0.1f), Color.red, 0.15f);
 
-        if(active)
+        if(nearbyConnections.Count > 0)
         {
-            _audio.volume = joystick.direction.magnitude;
+            if (_rigidbody.velocity != Vector3.zero)
+            {
+                connectionDistance = (nearbyConnections[0].position - transform.position).sqrMagnitude;
+                for (int i = 1; i < nearbyConnections.Count; i++)
+                {
+                    float distance = (nearbyConnections[i].position - transform.position).sqrMagnitude;
+                    if (distance < connectionDistance)
+                        connectionDistance = distance;
+                }
+                //connectionDistance = Mathf.Sqrt(connectionDistance);
+            }
+
+            _audio.volume = joystick.direction.magnitude * volumeMultiplier;
+
             if (isGrounded)
             {
                 _rigidbody.MovePosition(transform.position + (transform.forward * (joystick.direction.z * moveSpeed * Time.deltaTime)));
@@ -78,19 +93,13 @@ public class CaveRover : MonoBehaviour
     {
         switch (other.tag)
         {
-            case "Beacon":
+            case "":
 
                 break;
             case "Pickup":
 
                 break;
         }
-    }
-
-    public void SetActive(bool value)
-    {
-        active = value;
-        ToggleLights(value);
     }
 
     public void ArmInteract()

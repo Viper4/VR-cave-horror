@@ -13,25 +13,22 @@ public class BaseUI : MonoBehaviour
     public GameObject mainMenu;
     public GameObject settingsMenu;
 
-    [SerializeField] Transform XROrigin;
     DynamicMoveProvider dynamicMoveProvider;
     SnapTurnProviderBase snapTurnProvider;
     ContinuousTurnProviderBase smoothTurnProvider;
-    TunnelingVignetteController vignetteController;
+    [SerializeField] TunnelingVignetteController vignetteController;
 
     [SerializeField] ActionBasedControllerManager rightHandControllerManager;
 
     void Start()
     {
-        dynamicMoveProvider = XROrigin.GetComponent<DynamicMoveProvider>();
-        snapTurnProvider = XROrigin.GetComponent<SnapTurnProviderBase>();
-        smoothTurnProvider = XROrigin.GetComponent<ContinuousTurnProviderBase>();
-        vignetteController = Camera.main.GetComponent<TunnelingVignetteController>();
+        dynamicMoveProvider = Player.instance.GetComponent<DynamicMoveProvider>();
+        snapTurnProvider = Player.instance.GetComponent<SnapTurnProviderBase>();
+        smoothTurnProvider = Player.instance.GetComponent<ContinuousTurnProviderBase>();
     }
 
     public void Quit()
     {
-        Player.instance.SaveData();
         Application.Quit();
     }
 

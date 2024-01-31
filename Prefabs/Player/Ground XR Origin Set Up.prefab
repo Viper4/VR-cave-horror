@@ -1750,6 +1750,7 @@ GameObject:
   - component: {fileID: 7297322430417498747}
   - component: {fileID: 1519683543580595516}
   - component: {fileID: 6181788150621317882}
+  - component: {fileID: 4903591802288405006}
   m_Layer: 2
   m_Name: XR Origin
   m_TagString: Player
@@ -2041,8 +2042,8 @@ MonoBehaviour:
   useGravity: 1
   leftHand: {fileID: 8100564580012099537}
   rightHand: {fileID: 1370771183403421361}
-  walkSpeed: 1.5
-  runSpeed: 4
+  walkSpeed: 2.5
+  runSpeed: 7
   footstepAudio: {fileID: 1639748893513940120}
   dirtWalkClips:
   - {fileID: 8300000, guid: 9ea11a2d13d536e4e8441a0f5895995c, type: 3}
@@ -2161,72 +2162,41 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c11ecc89dec9e1a428e927466942ba39, type: 3}
   - {fileID: 8300000, guid: 4ca3f7b75bbc47c45a464277174030a4, type: 3}
   - {fileID: 8300000, guid: 31ce2f4f55b79d743ae941e2bc3a8dfa, type: 3}
+  tileWalkClips:
+  - {fileID: 8300000, guid: b993df4a93c1d304ab19d8b2eb88c9a5, type: 3}
+  - {fileID: 8300000, guid: 5c9bdbce37b06a24fa6ea793bcfd1907, type: 3}
+  - {fileID: 8300000, guid: 0909de896e9029541b92ae05fe15e4b6, type: 3}
+  - {fileID: 8300000, guid: 6ad0cf00f050bee41a2dee098475dc78, type: 3}
+  - {fileID: 8300000, guid: 7ca5a9710db4327439c9f8cb8204615e, type: 3}
+  - {fileID: 8300000, guid: 14ae706fef2303e4cb71112dbd5d250b, type: 3}
+  - {fileID: 8300000, guid: b995bc1775ea83b4b8f861763e9a1424, type: 3}
+  - {fileID: 8300000, guid: d15f7338d693f0343843a6b9096d27f6, type: 3}
+  tileRunClips:
+  - {fileID: 8300000, guid: ffa5441258224694690169f4bd95b969, type: 3}
+  - {fileID: 8300000, guid: 5a5fe2a543e35ef44980fcf5ac79551a, type: 3}
+  - {fileID: 8300000, guid: 062aac8f0463d7945a5a16732efbea51, type: 3}
+  - {fileID: 8300000, guid: e331a9e83f5b77e49bd9efba1b2c2fd9, type: 3}
+  - {fileID: 8300000, guid: 8c2c6c300bd8fc441878f426377bec64, type: 3}
+  - {fileID: 8300000, guid: f8e559768bed7ed4680ab0449da7ec3a, type: 3}
   minWalkInterval: 0.6
   maxWalkInterval: 0.9
   minRunInterval: 0.4
   maxRunInterval: 0.6
-  inShelter: 0
-  inCave: 0
-  enterShelter:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4318085012807645604}
-        m_TargetAssemblyTypeName: AmbianceControl, Assembly-CSharp
-        m_MethodName: EnterShelter
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  exitShelter:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4318085012807645604}
-        m_TargetAssemblyTypeName: AmbianceControl, Assembly-CSharp
-        m_MethodName: ExitShelter
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  enterCave:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4318085012807645604}
-        m_TargetAssemblyTypeName: AmbianceControl, Assembly-CSharp
-        m_MethodName: EnterCave
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  exitCave:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4318085012807645604}
-        m_TargetAssemblyTypeName: AmbianceControl, Assembly-CSharp
-        m_MethodName: ExitCave
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+--- !u!114 &4903591802288405006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3326442702252577583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ef32096ddf4ed94289c5a8f7a77b20b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveID: 0
+  savePosisition: 1
+  saveRotation: 1
 --- !u!1 &3387124927467514525
 GameObject:
   m_ObjectHideFlags: 0
@@ -4487,7 +4457,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 6.123234e-17, y: -3.7493994e-33, z: 6.123234e-17, w: -1}
   m_LocalPosition: {x: 0, y: -0.049999952, z: 0}
-  m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4954429324734518617}
@@ -4658,8 +4628,8 @@ MonoBehaviour:
   zDistanceMap: 3
   minDistance: -0.2
   maxDistance: 0.2
-  startAngle: 0
-  endAngle: -135
+  startAngle: -135
+  endAngle: 0
   stabilizeSpeed: 0
   pivot: {fileID: 1607994017885796266}
   stableTransform: {fileID: 7061617861161488676}
@@ -5057,7 +5027,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.025, z: 0}
-  m_LocalScale: {x: 0.36, y: 0.4, z: 0.36}
+  m_LocalScale: {x: 0.21, y: 0.25, z: 0.21}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 515141461571554131}
@@ -5587,22 +5557,22 @@ AudioReverbFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5415637100918115389}
-  m_Enabled: 0
+  m_Enabled: 1
   m_DryLevel: 0
   m_Room: -1000
-  m_RoomHF: -1000
-  m_DecayTime: 1.49
-  m_DecayHFRatio: 0.83
-  m_ReflectionsLevel: -10000
-  m_ReverbLevel: 500
-  m_ReverbDelay: 0.025
+  m_RoomHF: 0
+  m_DecayTime: 2.91
+  m_DecayHFRatio: 1.3
+  m_ReflectionsLevel: -602
+  m_ReverbLevel: -10000
+  m_ReverbDelay: 0.022
   m_Diffusion: 100
   m_Density: 100
   m_HFReference: 5000
   m_RoomLF: 0
   m_LFReference: 250
   m_ReflectionsDelay: 0
-  m_ReverbPreset: 19
+  m_ReverbPreset: 27
 --- !u!1 &6129031936175676297
 GameObject:
   m_ObjectHideFlags: 0
@@ -5995,7 +5965,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 6181788150621317882}
-  reverbFilter: {fileID: 0}
+  reverbFilter: {fileID: 1772365207758406448}
+  reverbLevelRange: {x: -10000, y: -302}
   outsideStormClip: {fileID: 8300000, guid: 65ecc078281e5de43b6dba693e6b33e2, type: 3}
   insideStormClip: {fileID: 8300000, guid: c271ee488bb8693429447065e9d6ae0c, type: 3}
   caveClip: {fileID: 8300000, guid: c080a43439910fd4187301b9c4a240d1, type: 3}
@@ -6016,7 +5987,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 5105061909270316918, guid: 34c06ae098236304c89ed884b9bd0ae5, type: 2}
-  m_audioClip: {fileID: 8300000, guid: c080a43439910fd4187301b9c4a240d1, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

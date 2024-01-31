@@ -11,8 +11,8 @@ public class Blinker : MonoBehaviour
 
     Material materialInstance;
 
-    [SerializeField] Color offColor;
-    [SerializeField] Color onColor;
+    [ColorUsage(true, true)] public Color offColor;
+    [ColorUsage(true, true)] public Color onColor;
     [SerializeField] bool changeLightColor;
     [SerializeField] Light _light;
 

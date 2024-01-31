@@ -15,6 +15,7 @@ public class MenuUI : BaseUI
 
     public void NewGame()
     {
+        SaveSystem.DeleteLatest();
         SceneLoader.instance.LoadScene(1);
     }
 

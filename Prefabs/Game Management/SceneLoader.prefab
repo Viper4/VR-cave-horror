@@ -453,7 +453,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -20}
+  m_AnchoredPosition: {x: 0, y: -30}
   m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &6410786416471210591
@@ -566,11 +566,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playOnStart: 0
-  loop: 1
-  specificRange: 1
-  characterStart: 7
-  characterEnd: 9
-  characterSpeed: 0.1
+  textLoops:
+  - text: LOADING
+    characterSpeed: 0.1
+    startIndex: -1
+    endIndex: -1
+    maxLoops: 1
+  - text: LOADING...
+    characterSpeed: 0.25
+    startIndex: 7
+    endIndex: 9
+    maxLoops: -1
 --- !u!1 &5806971032766077136
 GameObject:
   m_ObjectHideFlags: 0

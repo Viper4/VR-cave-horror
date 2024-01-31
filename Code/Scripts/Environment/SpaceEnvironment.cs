@@ -11,7 +11,7 @@ public class SpaceEnvironment : MonoBehaviour
 
     [SerializeField, Header("Wake Up Fade")] float fadeTime;
 
-    [SerializeField] AudioMixer masterMixer;
+    [SerializeField] AudioReverbFilter reverbFilter;
     [SerializeField] float[] dryLevelFade;
 
     public bool timing { get; set; }
@@ -21,7 +21,6 @@ public class SpaceEnvironment : MonoBehaviour
     void Start()
     {
         instance = this;
-        timer = GameManager.instance.GetLoadedTime();
         StartCoroutine(WakeUpFade());
     }
 
@@ -44,12 +43,12 @@ public class SpaceEnvironment : MonoBehaviour
         float fadeTimer = 0;
         while(fadeTimer < fadeTime)
         {
-            masterMixer.SetFloat("reverbDryLevel", Mathf.Lerp(dryLevelFade[0], dryLevelFade[1], fadeTimer / fadeTime));
+            reverbFilter.dryLevel = Mathf.Lerp(dryLevelFade[0], dryLevelFade[1], fadeTimer / fadeTime);
 
             fadeTimer += Time.deltaTime;
             yield return null;
         }
-        masterMixer.SetFloat("reverbDryLevel", dryLevelFade[1]);
+        reverbFilter.dryLevel = dryLevelFade[1];
         timing = true;
     }
 }

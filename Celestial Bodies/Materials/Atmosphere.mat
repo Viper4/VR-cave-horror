@@ -135,9 +135,9 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _LightColor: {r: 1, g: 0.9344161, b: 0.54402506, a: 1}
-    - _LightDirection: {r: -0.7265653, g: -0, b: -0.68709743, a: 0}
+    - _LightDirection: {r: -0.25499687, g: -0, b: -0.9669419, a: 0}
     - _MieScattering: {r: 0.01, g: 0.9, b: 0, a: 3}
-    - _PlanetPosition: {r: -2117.259, g: 0.47335982, b: -26.002937, a: 0}
+    - _PlanetPosition: {r: -703.9889, g: 1.4794058, b: 0.20991544, a: 0}
     - _RayleighScattering: {r: 1, g: 0.35, b: 0.05, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []

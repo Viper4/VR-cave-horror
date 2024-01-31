@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
     [SerializeField] float runSpeed = 3;
     public bool running { get; set; }
 
-    enum GroundMaterial { Dirt, Metal, Rock, Sand }
+    enum GroundMaterial { Dirt, Metal, Rock, Sand, Tile }
     GroundMaterial groundMaterial = GroundMaterial.Dirt;
 
     [Header("Footsteps")]
@@ -40,6 +40,9 @@ public class Player : MonoBehaviour
     [SerializeField] AudioClip[] sandWalkClips;
     [SerializeField] AudioClip[] sandRunClips;
 
+    [SerializeField] AudioClip[] tileWalkClips;
+    [SerializeField] AudioClip[] tileRunClips;
+
     [SerializeField] float minWalkInterval = 0.75f;
     [SerializeField] float maxWalkInterval = 1;
     float walkInterval;
@@ -48,14 +51,6 @@ public class Player : MonoBehaviour
     float runInterval;
 
     float footstepTimer = 0;
-
-    [Header("Events")]
-    public bool inShelter;
-    public bool inCave;
-    [SerializeField] UnityEvent enterShelter;
-    [SerializeField] UnityEvent exitShelter;
-    [SerializeField] UnityEvent enterCave;
-    [SerializeField] UnityEvent exitCave;
 
     private bool frozen = false;
     public bool Frozen
@@ -94,9 +89,6 @@ public class Player : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         RB = GetComponent<Rigidbody>();
         moveProvider.useGravity = useGravity;
-
-        if(SceneManager.GetActiveScene().buildIndex != 0)
-            StartCoroutine(SaveLoop());
     }
 
     void Update()
@@ -127,6 +119,9 @@ public class Player : MonoBehaviour
                             case GroundMaterial.Sand:
                                 footstepAudio.PlayOneShot(sandRunClips[Random.Range(0, sandRunClips.Length)]);
                                 break;
+                            case GroundMaterial.Tile:
+                                footstepAudio.PlayOneShot(tileRunClips[Random.Range(0, tileRunClips.Length)]);
+                                break;
                         }
                         footstepTimer = 0;
                     }
@@ -149,6 +144,9 @@ public class Player : MonoBehaviour
                                 break;
                             case GroundMaterial.Sand:
                                 footstepAudio.PlayOneShot(sandWalkClips[Random.Range(0, sandWalkClips.Length)]);
+                                break;
+                            case GroundMaterial.Tile:
+                                footstepAudio.PlayOneShot(tileWalkClips[Random.Range(0, tileWalkClips.Length)]);
                                 break;
                         }
                         footstepTimer = 0;
@@ -174,6 +172,9 @@ public class Player : MonoBehaviour
                         case GroundMaterial.Sand:
                             footstepAudio.PlayOneShot(sandRunClips[Random.Range(0, sandRunClips.Length)]);
                             break;
+                        case GroundMaterial.Tile:
+                            footstepAudio.PlayOneShot(tileRunClips[Random.Range(0, tileRunClips.Length)]);
+                            break;
                     }
                 }
                 else
@@ -191,6 +192,9 @@ public class Player : MonoBehaviour
                             break;
                         case GroundMaterial.Sand:
                             footstepAudio.PlayOneShot(sandWalkClips[Random.Range(0, sandWalkClips.Length)]);
+                            break;
+                        case GroundMaterial.Tile:
+                            footstepAudio.PlayOneShot(tileWalkClips[Random.Range(0, tileWalkClips.Length)]);
                             break;
                     }
                 }
@@ -219,52 +223,9 @@ public class Player : MonoBehaviour
             case "Sand":
                 groundMaterial = GroundMaterial.Sand;
                 break;
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        switch(other.tag)
-        {
-            case "ShelterIn":
-                inShelter = true;
-                enterShelter?.Invoke();
-                break;
-            case "ShelterOut":
-                inShelter = false;
-                exitShelter?.Invoke();
-                break;
-            case "CaveIn":
-                inCave = true;
-                enterCave?.Invoke();
-                break;
-            case "CaveOut":
-                inCave = false;
-                exitCave?.Invoke();
+            case "Tile":
+                groundMaterial = GroundMaterial.Tile;
                 break;
         }
-    }
-
-    public void UpdateWithLoadedData()
-    {
-        transform.SetPositionAndRotation(GameManager.instance.GetLoadedPosition(), GameManager.instance.GetLoadedRotation());
-    }
-
-    public void SaveData()
-    {
-        Scene activeScene = SceneManager.GetActiveScene();
-        if(activeScene.buildIndex != 0)
-        {
-            GameManager.instance.UpdatePlayerData(transform.position, transform.rotation, activeScene.buildIndex);
-            GameManager.instance.SavePlayerData();
-        }
-    }
-
-    IEnumerator SaveLoop()
-    {
-        yield return new WaitForSecondsRealtime(0.1f);
-        SaveData();
-        yield return new WaitForSeconds(30);
-        StartCoroutine(SaveLoop());
     }
 }

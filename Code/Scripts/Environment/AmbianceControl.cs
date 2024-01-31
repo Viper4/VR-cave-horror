@@ -5,8 +5,10 @@ using UnityEngine;
 public class AmbianceControl : MonoBehaviour
 {
     [SerializeField] Player player;
-    [SerializeField] AudioReverbFilter reverbFilter;
     AudioSource audioSource;
+    [SerializeField] AudioReverbFilter reverbFilter;
+    [SerializeField] Vector2 reverbLevelRange;
+
     bool storm = false;
     [SerializeField] AudioClip outsideStormClip;
     [SerializeField] AudioClip insideStormClip;
@@ -23,8 +25,9 @@ public class AmbianceControl : MonoBehaviour
     float perlinScale;
     float perlinSpeed;
 
-    float volumeT;
     bool fadingVolume = false;
+    public bool inShelter = false;
+    public bool inCave = false;
 
     void Start()
     {
@@ -43,40 +46,60 @@ public class AmbianceControl : MonoBehaviour
         storm = true;
         perlinScale = stormVolumeScale;
         perlinSpeed = stormVolumeSpeed;
-        audioSource.clip = player.inShelter ? insideStormClip : outsideStormClip;
+        audioSource.clip = inShelter ? insideStormClip : outsideStormClip;
         StartCoroutine(VolumeFade(true, stormFadeSpeed));
     }
 
     public void EnterShelter()
     {
-        if(storm && audioSource.clip != insideStormClip)
-            StartCoroutine(FadeToClip(insideStormClip));
+        if (!inShelter)
+        {
+            inShelter = true;
+            if (storm)
+                StartCoroutine(FadeToClip(insideStormClip));
+        }
     }
 
     public void ExitShelter()
     {
-        if(storm && audioSource.clip != outsideStormClip)
-            StartCoroutine(FadeToClip(outsideStormClip));
+        if (inShelter)
+        {
+            inShelter = false;
+            if (storm)
+                StartCoroutine(FadeToClip(outsideStormClip));
+        }
     }
 
     public void EnterCave()
     {
-        perlinScale = caveVolumeScale;
-        perlinSpeed = caveVolumeSpeed;
-        if(audioSource.clip != caveClip)
-            StartCoroutine(FadeToClip(caveClip));
+        if (!inCave)
+        {
+            inCave = true;
+            perlinScale = caveVolumeScale;
+            perlinSpeed = caveVolumeSpeed;
+            if (audioSource.clip != caveClip)
+            {
+                StartCoroutine(FadeToClip(caveClip));
+                StartCoroutine(ReverbFade(true, clipFadeSpeed));
+            }
+        }
     }
 
     public void ExitCave()
     {
-        perlinScale = stormVolumeScale;
-        perlinSpeed = stormVolumeSpeed;
-        ExitShelter();
+        if (inCave)
+        {
+            inCave = false;
+            perlinScale = stormVolumeScale;
+            perlinSpeed = stormVolumeSpeed;
+            ExitShelter();
+            StartCoroutine(ReverbFade(false, clipFadeSpeed));
+        }
     }
 
     IEnumerator FadeToClip(AudioClip newClip)
     {
-        StartCoroutine(VolumeFade(false, clipFadeSpeed));
+        StartCoroutine(VolumeFade(false, clipFadeSpeed));            
         yield return new WaitWhile(() => fadingVolume);
         audioSource.clip = newClip;
         StartCoroutine(VolumeFade(true, clipFadeSpeed));
@@ -85,15 +108,15 @@ public class AmbianceControl : MonoBehaviour
     IEnumerator VolumeFade(bool fadeIn, float fadeSpeed)
     {
         fadingVolume = true;
-        volumeT = 0;
+        float lerpT = 0;
 
         if (fadeIn)
         {
             audioSource.Play();
             while (lerpedVolume < targetVolume)
             {
-                lerpedVolume = Mathf.Lerp(0, targetVolume, volumeT);
-                volumeT += Time.deltaTime * fadeSpeed;
+                lerpedVolume = Mathf.Lerp(0, targetVolume, lerpT);
+                lerpT += Time.deltaTime * fadeSpeed;
                 yield return new WaitForEndOfFrame();
             }
         }
@@ -101,12 +124,37 @@ public class AmbianceControl : MonoBehaviour
         {
             while (lerpedVolume > 0)
             {
-                lerpedVolume = Mathf.Lerp(targetVolume, 0, volumeT);
-                volumeT += Time.deltaTime * fadeSpeed;
+                lerpedVolume = Mathf.Lerp(targetVolume, 0, lerpT);
+                lerpT += Time.deltaTime * fadeSpeed;
                 yield return new WaitForEndOfFrame();
             }
             audioSource.Stop();
         }
         fadingVolume = false;
+    }
+
+    IEnumerator ReverbFade(bool fadeIn, float fadeSpeed)
+    {
+        float lerpT = 0;
+
+        if (fadeIn)
+        {
+            audioSource.Play();
+            while (lerpedVolume < targetVolume)
+            {
+                reverbFilter.reverbLevel = Mathf.Lerp(reverbLevelRange.x, reverbLevelRange.y, lerpT);
+                lerpT += Time.deltaTime * fadeSpeed;
+                yield return new WaitForEndOfFrame();
+            }
+        }
+        else
+        {
+            while (lerpedVolume > 0)
+            {
+                reverbFilter.reverbLevel = Mathf.Lerp(reverbLevelRange.y, reverbLevelRange.x, lerpT);
+                lerpT += Time.deltaTime * fadeSpeed;
+                yield return new WaitForEndOfFrame();
+            }
+        }
     }
 }

@@ -22,18 +22,20 @@ public class HandGrabMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-
         if (RB != null) // Rigidbody can move freely for space
         {
-            if (grabbingHand != null)
+            if (!RB.isKinematic)
             {
-                Vector3 velocity = grabbingHand.velocity;
+                if (grabbingHand != null)
+                {
+                    Vector3 velocity = grabbingHand.velocity;
 
-                RB.velocity = transform.rotation * -velocity;
-            }
-            else
-            {
-                RB.angularVelocity = Vector3.zero;
+                    RB.velocity = transform.rotation * -velocity;
+                }
+                else
+                {
+                    RB.angularVelocity = Vector3.zero;
+                }
             }
         }
         else // Character controller can only move in a plane better for walking
@@ -43,7 +45,7 @@ public class HandGrabMovement : MonoBehaviour
                 moveProvider.enabled = false;
 
                 Vector3 velocity = grabbingHand.velocity;
-                characterController.Move(transform.rotation * -velocity);
+                characterController.Move(transform.rotation * -velocity * Time.fixedDeltaTime);
             }
             else
             {

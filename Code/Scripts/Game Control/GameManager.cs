@@ -6,7 +6,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    PlayerData currentPlayerData;
+    public Dictionary<uint, PlayerData.SaveObjectInfo> saveObjectInfoDict;
+    public PlayerData currentPlayerData;
 
     void Start()
     {
@@ -15,58 +16,73 @@ public class GameManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
             SaveSystem.Init();
-            currentPlayerData = SaveSystem.defaultPlayerData.Copy();
         }
     }
 
-    public PlayerData LoadLatestPlayerData()
+    public void LoadLatestPlayerData()
     {
         currentPlayerData = SaveSystem.LoadLatest();
-        return currentPlayerData;
+        saveObjectInfoDict = new Dictionary<uint, PlayerData.SaveObjectInfo>();
+        if (currentPlayerData != null)
+        {
+            foreach(PlayerData.SaveObjectInfo saveObjectInfo in currentPlayerData.saveObjectInfos)
+            {
+                saveObjectInfoDict.Add(saveObjectInfo.id, saveObjectInfo);
+            }
+            /*for (int i = 0; i < currentPlayerData.keys.Length; i++)
+            {
+                saveObjectInfoDict.Add(currentPlayerData.keys[i], currentPlayerData.values[i]);
+            }*/
+        }
     }
 
-    public void UpdatePlayerData(Vector3 pos, Quaternion rot, int sceneIndex)
+    public void UpdatePlayerData(SaveObject[] saveObjects, int sceneIndex)
     {
-        currentPlayerData.pos_x = pos.x;
-        currentPlayerData.pos_y = pos.y;
-        currentPlayerData.pos_z = pos.z;
+        if (currentPlayerData == null)
+            currentPlayerData = SaveSystem.defaultPlayerData.Copy();
 
-        currentPlayerData.rot_x = rot.x;
-        currentPlayerData.rot_y = rot.y;
-        currentPlayerData.rot_z = rot.z;
-        currentPlayerData.rot_w = rot.w;
+        currentPlayerData.saveObjectInfos = new PlayerData.SaveObjectInfo[saveObjects.Length];
+        if(saveObjectInfoDict != null && saveObjectInfoDict.Count > 0)
+        {
+            for (int i = 0; i < saveObjects.Length; i++)
+            {
+                PlayerData.SaveObjectInfo saveObjectInfo = saveObjects[i].GetInfo();
+                if (saveObjectInfoDict.ContainsKey(saveObjectInfo.id))
+                    saveObjectInfoDict[saveObjectInfo.id] = saveObjectInfo;
+                else
+                    saveObjectInfoDict.Add(saveObjectInfo.id, saveObjectInfo);
+                currentPlayerData.saveObjectInfos[i] = saveObjectInfo;
+            }
+        }
+        else
+        {
+            saveObjectInfoDict = new Dictionary<uint, PlayerData.SaveObjectInfo>();
+            for (int i = 0; i < saveObjects.Length; i++)
+            {
+                PlayerData.SaveObjectInfo saveObjectInfo = saveObjects[i].GetInfo();
+                saveObjectInfoDict.Add(saveObjectInfo.id, saveObjectInfo);
+                currentPlayerData.saveObjectInfos[i] = saveObjectInfo;
+            }
+        }
 
-        if(PlanetEnvironment.instance != null)
+        if (PlanetEnvironment.instance != null)
             currentPlayerData.time = PlanetEnvironment.instance.timer;
         else if(SpaceEnvironment.instance != null)
             currentPlayerData.time = SpaceEnvironment.instance.timer;
+
+        AmbianceControl ambiance = FindObjectOfType<AmbianceControl>();
+        if (ambiance != null)
+        {
+            currentPlayerData.inShelter = ambiance.inShelter;
+            currentPlayerData.inCave = ambiance.inCave;
+        }
 
         currentPlayerData.sceneIndex = sceneIndex;
     }
 
     public void SavePlayerData()
     {
-        Debug.Log("Saved player data");
-        SaveSystem.Save("PlayerData", currentPlayerData);
-    }
-
-    public Vector3 GetLoadedPosition()
-    {
-        return new Vector3(currentPlayerData.pos_x, currentPlayerData.pos_y, currentPlayerData.pos_z);
-    }
-
-    public Quaternion GetLoadedRotation()
-    {
-        return new Quaternion(currentPlayerData.rot_x, currentPlayerData.rot_y, currentPlayerData.rot_z, currentPlayerData.rot_w);
-    }
-
-    public float GetLoadedTime()
-    {
-        return currentPlayerData.time;
-    }
-
-    public int GetLoadedSceneIndex()
-    {
-        return currentPlayerData.sceneIndex;
+        if(currentPlayerData != null)
+            SaveSystem.Save("PlayerData", currentPlayerData);
     }
 }

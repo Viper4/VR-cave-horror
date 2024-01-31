@@ -27,6 +27,14 @@ public class LeverInteractable : XRBaseInteractable
 
     Transform interactingHand;
 
+    private void Start()
+    {
+        if(endAngle < startAngle)
+        {
+            Debug.LogWarning("Lever wont rotate correctly for " + transform.name + " because its end angle is less than the start angle");
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -40,12 +48,6 @@ public class LeverInteractable : XRBaseInteractable
             float xAngle = pivot.localEulerAngles.x;
             float yAngle = pivot.localEulerAngles.y;
             float zAngle = pivot.localEulerAngles.z;
-            /*if (xAngle > 180)
-                xAngle -= 360;
-            if (yAngle > 180)
-                yAngle -= 360;
-            if (zAngle > 180)
-                zAngle -= 360;*/
 
             switch (xDistanceMap)
             {
@@ -83,12 +85,6 @@ public class LeverInteractable : XRBaseInteractable
                     zAngle = Mathf.Lerp(startAngle, endAngle, zDistance);
                     break;
             }
-            /*if (xAngle < 0)
-                xAngle += 360;
-            if (yAngle < 0)
-                yAngle += 360;
-            if (zAngle < 0)
-                zAngle += 360;*/
 
             pivot.localEulerAngles = new Vector3(xAngle, yAngle, zAngle);
         }

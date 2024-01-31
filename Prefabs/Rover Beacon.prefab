@@ -225,7 +225,7 @@ Transform:
   m_GameObject: {fileID: 1705850231344472231}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.05142255, y: 0.6834, z: 0}
+  m_LocalPosition: {x: 0.05142255, y: 0.9, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -376,7 +376,7 @@ Transform:
   m_GameObject: {fileID: 2430183091399690748}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.036, y: 0.6834, z: -0.05319068}
+  m_LocalPosition: {x: -0.036, y: 0.8, z: -0.05319068}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -529,8 +529,8 @@ Transform:
   m_GameObject: {fileID: 4330898071164720767}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.21854, z: 0}
-  m_LocalScale: {x: 0.035, y: 0.0075, z: 0.035}
+  m_LocalPosition: {x: 0, y: 0.2211, z: 0}
+  m_LocalScale: {x: 0.035, y: 0.01, z: 0.035}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1246296109277281061}
@@ -602,9 +602,9 @@ MonoBehaviour:
   startDelayMax: 0
   loopTime: 2
   onTime: 0.25
-  offColor: {r: 0, g: 0, b: 0, a: 0}
-  onColor: {r: 1, g: 0, b: 0, a: 0}
-  changeLightColor: 0
+  offColor: {r: 0, g: 0, b: 0, a: 1}
+  onColor: {r: 7.9999995, g: 0, b: 0, a: 1}
+  changeLightColor: 1
   _light: {fileID: 6249579941885729048}
   lightPattern: 
 --- !u!1 &6146897613049815976
@@ -619,9 +619,11 @@ GameObject:
   - component: {fileID: 685522816886399204}
   - component: {fileID: 190227703791343154}
   - component: {fileID: 565515856033563587}
+  - component: {fileID: -7225787330711587367}
+  - component: {fileID: -7747052190175772923}
   m_Layer: 13
   m_Name: Rover Beacon
-  m_TagString: Untagged
+  m_TagString: RoverBeacon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -718,6 +720,46 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.25, y: 1.3623567, z: 0.25}
   m_Center: {x: 0, y: 0.20277129, z: 0}
+--- !u!114 &-7225787330711587367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6146897613049815976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13d38221243842540bc02e85ee1bf775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sphereCollider: {fileID: 0}
+  ignoreLayers:
+    serializedVersion: 2
+    m_Bits: 39028
+  blinker: {fileID: 419517631408159268}
+  connectedColor: {r: 0, g: 8, b: 0, a: 1}
+  disconnectedColor: {r: 8, g: 0, b: 0, a: 1}
+--- !u!135 &-7747052190175772923
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6146897613049815976}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 90
+  m_Center: {x: 0, y: 0.75, z: 0}
 --- !u!1 &6841069922310851504
 GameObject:
   m_ObjectHideFlags: 0
